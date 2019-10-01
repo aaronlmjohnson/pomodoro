@@ -49,7 +49,15 @@ table {
 /* CSS */
 #night-mode{
   font-size: 3.0em;
-  text-align: right;
+  display: flex;
+  justify-content: flex-end;
+}
+#night-mode button{
+  border: none;
+  background: none;
+  font-size: 1.0em;
+  cursor: pointer;
+  outline: none;
 }
 #timer{
   font-family: "Roboto Condensed";

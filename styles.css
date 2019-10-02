@@ -47,6 +47,9 @@ table {
 	border-spacing: 0;
 }
 /* CSS */
+body{
+
+}
 #night-mode{
   font-size: 3.0em;
   display: flex;
@@ -92,6 +95,53 @@ table {
 #time-buttons p{
   padding: 0 20px;
 }
+
+@keyframes night-mode-background {
+  from {
+    background-color: white;
+  }
+
+  to {
+    background-color: black;
+  }
+}
+@keyframes night-mode-color {
+  from {
+    color: black;
+  }
+
+  to {
+    color: white;
+  }
+}
+
+@keyframes standard-mode-background {
+  from {
+    background-color: black;
+  }
+
+  to {
+    background-color: white;
+  }
+}
+@keyframes standard-mode-color {
+  from {
+    color: white;
+  }
+
+  to {
+    color: black;
+  }
+}
+
+.to-night-mode{
+  animation: night-mode-background 2s forwards;
+}
+.to-standard-mode{
+  animation: standard-mode-background 2s forwards;
+}
+
+
 
 
 

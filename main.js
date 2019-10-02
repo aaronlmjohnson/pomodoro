@@ -10,28 +10,34 @@ let isNightMode = false;
 nightMode.addEventListener('click',()=>{
   if(isNightMode){
     isNightMode = false;
-    body.style.cssText = "background-color: white";
 
+    body.classList.remove("to-night-mode");
+    body.classList.add("to-standard-mode");
+    
     moonSun.style.cssText = "color: black";
     moonSun.innerHTML = "☽";
 
     title.style.cssText = "color: white; background-color: black";
+
     headers.style.cssText = "color: black";
     time.style.cssText = "color: black";
     timeButtons.style.cssText = "color: black";
   }else{
     isNightMode = true;
-    body.style.cssText = "background-color: black";
+    body.classList.remove("to-standard-mode");
+    body.classList.add("to-night-mode");
 
     moonSun.style.cssText = "color: white";
     moonSun.innerHTML = "☼";
 
     title.style.cssText = "color: black; background-color: white";
+    title.style.animation = "standardMode 2s";
+
     headers.style.cssText = "color: white";
     time.style.cssText = "color: white";
     timeButtons.style.cssText = "color: white";
   }
-  console.log(headers);
+  console.log(body);
 });
 
 

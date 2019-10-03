@@ -16,11 +16,13 @@
     <div class="headers">
       <div>
         <h2>session</h2>
-        <p><span>▼</span>25<span>▲</span></p>
+        <p>
+          <span ><button class="arrow-button down-arrow session">▼</button></span><span id="session-value">25</span><span><button class="arrow-button up-arrow session">▲</button></span>
+        </p>
       </div>
       <div>
         <h2 id ="break">break</h2>
-        <p><span>▼</span>5<span>▲</span></p>
+        <p><span ><button class="arrow-button down-arrow break">▼</button></span><span id="break-value">5</span><span><button class="arrow-button up-arrow break">▲</button></span></p>
       </div>
     </div>
 
@@ -28,9 +30,9 @@
       <p id="clock">25:00</p>
     </div>
     <div id="time-buttons">
-      <p>▶</p>
-      <p>↻</p>
-      <p>&#9632</p>
+      <button id="play-pause">▶</button>
+      <button id="restart">↻</button>
+      <button id="stop">&#9632</button>
     </div>
   </div>
 

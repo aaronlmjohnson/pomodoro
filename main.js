@@ -25,7 +25,10 @@ class Timer{
   this.milliseconds = milliseconds;
   }
 
-  start(/*element*/){
+  start(){
+    if(this.running)
+      return;
+
     this.running = true;
     this.paused = false;
     this.stopped = false;
@@ -64,6 +67,7 @@ class Timer{
 const updateTimer = (element, timer)=> {
   let minutes = Math.floor((timer.time_ms / 60000) % 60);
   let seconds = (timer.time_ms / 1000) % 60
+  console.log(timer.time_s)
   element.innerHTML = (minutes < 9 ? "0"+minutes : minutes) + ":" + (seconds <= 9 ? "0"+seconds : seconds);
 }
 
@@ -75,6 +79,11 @@ const headers = document.querySelector('.headers');
 const timeButtons = document.querySelector('#time-buttons');
 const time = document.querySelector('#time');
 const clock = document.querySelector('#clock');
+const arrowButtons = [...document.querySelectorAll('.arrow-button')];
+const sessionValue = document.querySelector('#session-value');
+const breakValue = document.querySelector('#break-value');
+let sessionNum = 25;
+let breakNum = 5;
 let isNightMode = false;
 
 nightMode.addEventListener('click',()=>{
@@ -92,6 +101,10 @@ nightMode.addEventListener('click',()=>{
     headers.style.cssText = "color: black";
     time.style.cssText = "color: black";
     timeButtons.style.cssText = "color: black";
+
+    arrowButtons.forEach((button)=>{
+      button.style.cssText = "color: black";
+    });
   }else{
     isNightMode = true;
     body.classList.remove("to-standard-mode");
@@ -106,17 +119,27 @@ nightMode.addEventListener('click',()=>{
     headers.style.cssText = "color: white";
     time.style.cssText = "color: white";
     timeButtons.style.cssText = "color: white";
+    arrowButtons.forEach((button)=>{
+      button.style.cssText = "color: white";
+    });
   }
 });
 
+let sessionTimer = new Timer(sessionNum*60);
+let breakTimer = new Timer(breakNum*60);
 
-let sessionTimer = new Timer(5);
-let breakTimer = new Timer(3);
-let newCycle = true; // so the breakTimer doesn't restart once it finishes it's cycle
 let activeTimer = '';
-//sessionTimer.start();
 
 setInterval(()=>{
+  if(sessionTimer.running || breakTimer.running){
+    arrowButtons.forEach((button)=>{
+      button.style.cssText = "display: none";
+      button.disabled = true;
+    });
+    playPause.innerHTML = '▮▮';
+  }else{
+    playPause.innerHTML = "▶";
+  }
   
   if(activeTimer == 'session'){
     if(sessionTimer.running){
@@ -132,18 +155,67 @@ setInterval(()=>{
       sessionTimer.start();
       activeTimer = 'session'
     } 
-  }
-  /*if(sessionTimer.running){
-    updateTimer(clock, sessionTimer);
-  }else if (sessionTimer.stopped && breakTimer.stopped){
-    breakTimer.start();
-  } else if(breakTimer.running){
-    updateTimer(clock, breakTimer);
-  }else if(breakTimer.stopped){
-    sessionTimer.start();
-  }*/
-    
+  } 
 });
+
+arrowButtons.forEach((button)=>{
+  const buttonClasses = [...button.classList];
+  button.addEventListener('click',(e)=>{
+    if(buttonClasses.includes('up-arrow')){
+      if(buttonClasses.includes("session")){
+        sessionNum = sessionNum >= 25 ? 25: sessionNum+1;
+      }else{
+        breakNum = breakNum >= 25 ? 25: breakNum+1;
+      }
+    }else if(buttonClasses.includes('down-arrow')){
+      if(buttonClasses.includes("session")){
+      sessionNum = sessionNum <= 1 ? 1: sessionNum-1;
+      }else
+      breakNum = breakNum <= 1 ? 1: breakNum-1;
+    }
+    sessionValue.innerHTML = sessionNum;
+    breakValue.innerHTML = breakNum;
+
+    clock.innerHTML = (sessionNum <=9 ? "0"+sessionNum : sessionNum) + ":00";
+  });
+});
+
+const playPause = document.querySelector('#play-pause');
+let playing = false;
+
+playPause.addEventListener('click',(e)=>{
+  if(!playing){
+    playing = true;
+
+    if(!activeTimer)
+      activeTimer = 'session';
+    else
+      breakTimer = 'break';
+
+    if(activeTimer == 'session')
+      sessionTimer.start();
+    else
+      breakTimer.start();
+  }else{
+    playing = false;
+    if(activeTimer == 'session')
+      sessionTimer.pause();
+    else if(activeTimer == 'break')
+      breakTimer.pause();
+  }
+});
+
+const stop = document.querySelector('#stop');
+
+stop.addEventListener('click',(e)=>{
+  playing = false;
+  if(activeTimer == 'session')
+      sessionTimer.stop();
+    else
+      breakTimer.stop();
+  activeTimer = '';
+});
+
 
 
 

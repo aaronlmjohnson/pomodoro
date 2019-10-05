@@ -21,8 +21,8 @@ class Timer{
     this.milliseconds = seconds * 1000;
   }
   
-  set time_ms(milliseconds){
-  this.milliseconds = milliseconds;
+  setTime_ms(milliseconds){
+    this.milliseconds = milliseconds;
   }
 
   start(){
@@ -67,7 +67,7 @@ class Timer{
 const updateTimer = (element, timer)=> {
   let minutes = Math.floor((timer.time_ms / 60000) % 60);
   let seconds = (timer.time_ms / 1000) % 60
-  console.log(timer.time_s)
+  //console.log(timer.time_s)
   element.innerHTML = (minutes < 9 ? "0"+minutes : minutes) + ":" + (seconds <= 9 ? "0"+seconds : seconds);
 }
 
@@ -105,6 +105,9 @@ nightMode.addEventListener('click',()=>{
     arrowButtons.forEach((button)=>{
       button.style.cssText = "color: black";
     });
+    playPause.style.cssText = "color: black";
+    stop.style.cssText = "color: black";
+    restart.style.cssText = "color: black";
   }else{
     isNightMode = true;
     body.classList.remove("to-standard-mode");
@@ -122,13 +125,42 @@ nightMode.addEventListener('click',()=>{
     arrowButtons.forEach((button)=>{
       button.style.cssText = "color: white";
     });
+
+    playPause.style.cssText = "color: white";
+    stop.style.cssText = "color: white";
+    restart.style.cssText = "color: white";
   }
 });
 
 let sessionTimer = new Timer(sessionNum*60);
+//let sessionTimer = new Timer(5);
 let breakTimer = new Timer(breakNum*60);
 
 let activeTimer = '';
+
+arrowButtons.forEach((button)=>{
+  const buttonClasses = [...button.classList];
+  button.addEventListener('click',(e)=>{
+    if(buttonClasses.includes('up-arrow')){
+      if(buttonClasses.includes("session")){
+        sessionNum = sessionNum >= 25 ? 25: sessionNum+1; 
+      }else{
+        breakNum = breakNum >= 25 ? 25: breakNum+1;
+      }
+    }else if(buttonClasses.includes('down-arrow')){
+      if(buttonClasses.includes("session")){
+      sessionNum = sessionNum <= 1 ? 1: sessionNum-1;
+      }else
+      breakNum = breakNum <= 1 ? 1: breakNum-1;
+    }
+    sessionTimer.setTime_ms(sessionNum * 60000);
+    breakTimer.setTime_ms(breakNum * 60000);
+    sessionValue.innerHTML = sessionNum;
+    breakValue.innerHTML = breakNum;
+
+    clock.innerHTML = (sessionNum <=9 ? "0"+sessionNum : sessionNum) + ":00";
+  });
+});
 
 setInterval(()=>{
   if(sessionTimer.running || breakTimer.running){
@@ -158,27 +190,7 @@ setInterval(()=>{
   } 
 });
 
-arrowButtons.forEach((button)=>{
-  const buttonClasses = [...button.classList];
-  button.addEventListener('click',(e)=>{
-    if(buttonClasses.includes('up-arrow')){
-      if(buttonClasses.includes("session")){
-        sessionNum = sessionNum >= 25 ? 25: sessionNum+1;
-      }else{
-        breakNum = breakNum >= 25 ? 25: breakNum+1;
-      }
-    }else if(buttonClasses.includes('down-arrow')){
-      if(buttonClasses.includes("session")){
-      sessionNum = sessionNum <= 1 ? 1: sessionNum-1;
-      }else
-      breakNum = breakNum <= 1 ? 1: breakNum-1;
-    }
-    sessionValue.innerHTML = sessionNum;
-    breakValue.innerHTML = breakNum;
 
-    clock.innerHTML = (sessionNum <=9 ? "0"+sessionNum : sessionNum) + ":00";
-  });
-});
 
 const playPause = document.querySelector('#play-pause');
 let playing = false;
@@ -206,14 +218,39 @@ playPause.addEventListener('click',(e)=>{
 });
 
 const stop = document.querySelector('#stop');
-
-stop.addEventListener('click',(e)=>{
+const stopTimer = ()=>{
   playing = false;
   if(activeTimer == 'session')
       sessionTimer.stop();
     else
       breakTimer.stop();
   activeTimer = '';
+  playPause.innerHTML = "▶";
+  clock.innerHTML = (sessionNum <=9 ? "0"+sessionNum : sessionNum) + ":00";
+  sessionTimer.setTime_ms(sessionNum * 60000);
+  arrowButtons.forEach((button)=>{
+    button.disabled = false;
+    button.style.cssText = "display: inline-block";
+    button.style.cssText = isNightMode ? "color: white" : "color: black";
+    
+  });
+
+}
+
+stop.addEventListener('click',stopTimer);
+
+const restart = document.querySelector('#restart');
+restart.addEventListener('click', ()=>{
+  stopTimer();
+  sessionNum = 25;
+  breakNum = 25;
+  sessionTimer.setTime_ms(sessionNum * 60000);
+  breakTimer.setTime_ms(breakNum * 60000);
+  clock.innerHTML = (sessionNum <=9 ? "0"+sessionNum : sessionNum) + ":00";
+  sessionValue.innerHTML = sessionNum;
+  breakValue.innerHTML = breakNum;
+  
+  
 });
 
 

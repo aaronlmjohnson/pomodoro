@@ -47,9 +47,6 @@ table {
 	border-spacing: 0;
 }
 /* CSS */
-body{
-
-}
 #night-mode{
   font-size: 3.0em;
   display: flex;
@@ -143,7 +140,6 @@ body{
     color: black;
   }
 }
-
 .to-night-mode{
   animation: night-mode-background 2s forwards;
 }

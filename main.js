@@ -7,9 +7,7 @@ class Timer{
     this.running = false;
     this.paused = false;
     this.stopped = true;
-  
   }
-  
   
   get time_s(){
   return this.milliseconds / 1000;
@@ -38,10 +36,7 @@ class Timer{
       else{
         this.milliseconds -= 1000;
         let minutes = Math.floor((this.milliseconds / 60000) % 60);
-        let seconds = (this.milliseconds / 1000) % 60
-        
-        //element.innerHTML = (minutes < 9 ? "0"+minutes : minutes) + ":" + (seconds < 9 ? "0"+seconds : seconds);
-
+        let seconds = (this.milliseconds / 1000) % 60;
       } 
       
     },1000);
@@ -61,13 +56,11 @@ class Timer{
     this.stopped = true;
     this.milliseconds = this.startMilliseconds;
   }
-
 }
 
 const updateTimer = (element, timer)=> {
   let minutes = Math.floor((timer.time_ms / 60000) % 60);
   let seconds = (timer.time_ms / 1000) % 60
-  //console.log(timer.time_s)
   element.innerHTML = (minutes < 9 ? "0"+minutes : minutes) + ":" + (seconds <= 9 ? "0"+seconds : seconds);
 }
 
@@ -133,7 +126,6 @@ nightMode.addEventListener('click',()=>{
 });
 
 let sessionTimer = new Timer(sessionNum*60);
-//let sessionTimer = new Timer(5);
 let breakTimer = new Timer(breakNum*60);
 
 let activeTimer = '';
@@ -154,7 +146,6 @@ arrowButtons.forEach((button)=>{
       breakNum = breakNum <= 1 ? 1: breakNum-1;
     }
     sessionTimer.setTime_ms(sessionNum * 60000);
-    breakTimer.setTime_ms(breakNum * 60000);
     sessionValue.innerHTML = sessionNum;
     breakValue.innerHTML = breakNum;
 
@@ -177,6 +168,7 @@ setInterval(()=>{
     if(sessionTimer.running){
       updateTimer(clock, sessionTimer);
     }else if (sessionTimer.stopped){
+      breakTimer.setTime_ms(breakNum * 60000);
       breakTimer.start();
       activeTimer = 'break'
     } 
@@ -184,6 +176,7 @@ setInterval(()=>{
     if(breakTimer.running){
       updateTimer(clock, breakTimer);
     }else if (breakTimer.stopped){
+      sessionTimer.setTime_ms(sessionNum * 60000);
       sessionTimer.start();
       activeTimer = 'session'
     } 
